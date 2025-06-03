@@ -22,7 +22,7 @@ const categories: NewsCategory[] = [
 ];
 
 interface NewsGridProps {
-    onArticleSelect: (article: RssItem) => void;
+    onArticleSelect: (article: RssItem, category: string) => void;
 }
 
 export default function NewsGrid({ onArticleSelect }: NewsGridProps) {
@@ -100,7 +100,7 @@ export default function NewsGrid({ onArticleSelect }: NewsGridProps) {
                     <Card
                         key={article.id}
                         className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                        onClick={() => onArticleSelect(article)}
+                        onClick={() => onArticleSelect(article, article.category)}
                     >
                         <div className="aspect-video relative">
                             <img

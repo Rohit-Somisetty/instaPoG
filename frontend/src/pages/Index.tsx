@@ -6,38 +6,26 @@ import ArticleModal from "../components/features/ArticleModal";
 import ContentGeneration from "../components/features/ContentGeneration";
 import { generateFromUrl } from "../lib/news-service";
 import { toast } from "../hooks/use-toast";
-
-interface Article {
-  id: string;
-  title: string;
-  preview: string;
-  thumbnail: string;
-  source: string;
-  date: string;
-  generatedContent?: {
-    summary: string;
-    instagramPost: string;
-  };
-}
+import { GenerateContentResponse } from "../lib/api-service";
+import type { RssItem } from "@/lib/rss-service";
 
 const Index = () => {
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<RssItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showContentGeneration, setShowContentGeneration] = useState(false);
-  const [generatedArticle, setGeneratedArticle] = useState<Article | null>(null);
+  const [generatedArticle, setGeneratedArticle] = useState<RssItem | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleArticleClick = (article: Article, category: string) => {
+  const handleArticleClick = (article: RssItem, category: string) => {
     setSelectedArticle(article);
     setSelectedCategory(category);
     setIsModalOpen(true);
   };
 
-  const handleCreatePost = (article: Article) => {
+  const handleCreatePost = (article: RssItem) => {
     setGeneratedArticle(article);
     setShowContentGeneration(true);
-    // Smooth scroll to the content generation section
     setTimeout(() => {
       document.getElementById('summary')?.scrollIntoView({ 
         behavior: 'smooth',
@@ -51,28 +39,33 @@ const Index = () => {
       setIsGenerating(true);
       const response = await generateFromUrl(url);
       
-      const processedArticle: Article = {
-        id: "url-" + Date.now(),
-        title: response.title || "Article from URL",
-        preview: response.preview || "Content extracted from the provided URL",
-        thumbnail: response.thumbnail || "/lovable-uploads/467feebf-707c-4337-8287-2bacf1fe9a3e.png",
-        source: url,
-        date: new Date().toISOString().split('T')[0],
-        generatedContent: {
-          summary: response.summary,
-          instagramPost: response.instagramPost
-        }
+      if (!response) {
+        throw new Error('No response received from the server');
+      }
+
+      const processedArticle: RssItem = {
+        id: Date.now().toString(),
+        title: url,
+        description: "Content extracted from URL",
+        link: url,
+        pubDate: new Date().toISOString(),
+        source: new URL(url).hostname,
+        image: "/placeholder.svg",
+        summary: response.summary,
+        instagramPost: response.instagramPost
       };
       
       setGeneratedArticle(processedArticle);
       setShowContentGeneration(true);
       
-      // Smooth scroll to the content generation section
       setTimeout(() => {
-        document.getElementById('summary')?.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
+        const element = document.getElementById('summary');
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       }, 100);
 
       toast({
@@ -80,9 +73,10 @@ const Index = () => {
         description: "Your article has been processed successfully",
       });
     } catch (error) {
+      console.error('Generation error:', error);
       toast({
-        title: "Error",
-        description: "Failed to process the URL. Please try again.",
+        title: "Error Processing URL",
+        description: error instanceof Error ? error.message : "Failed to process the URL. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -94,20 +88,22 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       <HeroSection onGenerateFromUrl={handleGenerateFromUrl} isGenerating={isGenerating} />
-      <NewsGrid onArticleClick={handleArticleClick} />
+      <NewsGrid onArticleSelect={handleArticleClick} />
       
       <ArticleModal
         article={selectedArticle}
-        category={selectedCategory}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onCreatePost={handleCreatePost}
+        category={selectedCategory}
       />
       
-      <ContentGeneration
-        article={generatedArticle}
-        isVisible={showContentGeneration}
-      />
+      {generatedArticle && (
+        <ContentGeneration
+          article={generatedArticle}
+          isVisible={showContentGeneration}
+        />
+      )}
     </div>
   );
 };

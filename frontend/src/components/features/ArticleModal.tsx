@@ -11,27 +11,33 @@ interface ArticleModalProps {
   article: RssItem | null;
   isOpen: boolean;
   onClose: () => void;
+  onCreatePost?: (article: RssItem) => void;
+  category?: string;
 }
 
-const ArticleModal = ({ article, isOpen, onClose }: ArticleModalProps) => {
+const ArticleModal = ({
+  article,
+  isOpen,
+  onClose,
+  onCreatePost,
+  category,
+}: ArticleModalProps) => {
   const [showGeneration, setShowGeneration] = useState(false);
 
   if (!isOpen || !article) return null;
 
   const handleGenerateClick = () => {
-    setShowGeneration(true);
-  };
-
-  const handleClose = () => {
-    setShowGeneration(false);
-    onClose();
+    if (onCreatePost && article) {
+      onCreatePost(article);
+      onClose();
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={handleClose}
+        onClick={onClose}
       />
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-background p-6 rounded-lg shadow-lg">
         <div className="flex items-start justify-between mb-4">
@@ -46,7 +52,7 @@ const ArticleModal = ({ article, isOpen, onClose }: ArticleModalProps) => {
               <Badge>{article.category}</Badge>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={handleClose}>
+          <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-4 h-4" />
           </Button>
         </div>
