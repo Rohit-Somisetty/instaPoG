@@ -1,0 +1,50 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: npm ci
+
+    - name: Build Backend
+      working-directory: ./backend
+      run: npm run build
+
+    - name: Install Frontend Dependencies
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: Build Frontend
+      working-directory: ./frontend
+      env:
+        VITE_API_URL: https://backend-giupnqc8c-rohit-somisettys-projects.vercel.app
+      run: npm run build
+
+    - name: Type Check Frontend
+      working-directory: ./frontend
+      run: npm run type-check
+
+    - name: Lint Frontend
+      working-directory: ./frontend
+      run: npm run lint

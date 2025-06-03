@@ -1,0 +1,41 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "vercel-build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Backend service for RSS feed fetching and AI content generation",
+  "dependencies": {
+    "@google-ai/generativelanguage": "^3.2.0",
+    "@google/generative-ai": "^0.24.1",
+    "@types/cheerio": "^0.22.35",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.29",
+    "@types/node-fetch": "^2.6.12",
+    "axios": "^1.9.0",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^3.3.2",
+    "ollama": "^0.4.6",
+    "openai": "^5.0.2",
+    "p-limit": "^5.0.0",
+    "rss-parser": "^3.13.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}

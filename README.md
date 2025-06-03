@@ -1,4 +1,21 @@
-# Welcome to your Lovable project
+# InstaPoG (Instagram Post Generator)
+
+A full-stack application that generates Instagram-ready posts from RSS feeds and articles using AI.
+
+## Project Structure
+
+```
+├── backend/           # Express.js + TypeScript backend
+│   ├── src/
+│   │   ├── services/ # Core services (AI, RSS)
+│   │   └── types/    # TypeScript type definitions
+├── frontend/         # React + Vite frontend
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   ├── hooks/      # Custom React hooks
+│   │   ├── lib/        # Utility functions and services
+│   │   └── pages/      # Page components
+└── docs/            # Project documentation
 
 ## Project info
 
@@ -59,6 +76,19 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+
+## Deployment
+
+The frontend can be deployed to Vercel. See the `frontend/DEPLOY.md` file for detailed deployment instructions.
+
+## Future Backend Development
+
+The backend directory is set up for future server-side development. This will include:
+
+- API endpoints for article processing
+- AI content generation services
+- User authentication
+- Content storage and management
 
 ## How can I deploy this project?
 

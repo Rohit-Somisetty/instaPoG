@@ -1,0 +1,13 @@
+export interface Article {
+  id: string;
+  title: string;
+  preview: string;
+  thumbnail: string;
+  source: string;
+  date: string;
+}
+
+export interface GeneratedContent {
+  summary: string;
+  instagramPost: string;
+}
