@@ -1,7 +1,11 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Debug class */
+.debug-screen {
+  @apply min-h-screen bg-background text-foreground;
+}
 
 @layer base {
   :root {
